@@ -1,2 +1,6 @@
 editor/.dart_tool
 editor/build
+editor/main.js
+editor/main.js.deps
+editor/main.js.map
+editor/web/owe.json

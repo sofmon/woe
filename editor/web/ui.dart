@@ -2,6 +2,7 @@ part of owe;
 
 abstract class UI {
   UI _parent;
+  bool _deleted = false;
 
   UI(this._parent) {}
 
@@ -16,13 +17,14 @@ abstract class UI {
     }
     if (data is String) {
       return StringInputUI(data, this);
+      // TODO: support dates
     }
     if (data is num) {
       return NumberInputUI(data, this);
     }
-
-    // TODO: number and decimal
-
+    if (data is bool) {
+      return BoolInputUI(data, this);
+    }
     return EmptyUI(this);
   }
 
@@ -79,6 +81,12 @@ abstract class UI {
 
   void clear();
 
+  bool ready();
+
+  void deleted(bool del) {
+    _deleted = del;
+  }
+
   String niceText(String text) {
     var sb = new StringBuffer();
     var breaks = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'.runes;
@@ -106,14 +114,18 @@ abstract class UI {
 }
 
 class EmptyUI extends UI {
-  html.Element _element;
+  var _element = new html.SpanElement();
   html.Element get element => _element;
 
-  EmptyUI(UI parent) : super(parent) {
-    _element = html.SpanElement();
+  EmptyUI(UI parent) : super(parent) {}
+
+  dynamic toDynamic() {
+    return null;
   }
 
-  dynamic toDynamic() {}
+  bool ready() {
+    return true;
+  }
 
   void clear() {}
 }

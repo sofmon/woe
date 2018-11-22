@@ -22,7 +22,7 @@ const oweHTML = `<!DOCTYPE html>
     th,
     td {
       border-bottom: 1px solid #f5f5f5;
-      padding: 0.5vw;
+      padding: 5px;
       white-space: normal;
     }
 

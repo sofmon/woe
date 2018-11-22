@@ -73,6 +73,10 @@ class ListUI extends UI {
     return res;
   }
 
+  bool ready() {
+    return !_children.any((c) => !c.ready());
+  }
+
   void clear() {
     _children.forEach((c) => c.clear());
   }
@@ -88,9 +92,6 @@ class RowUI extends UI {
   html.Element get element => _element;
 
   var _ready = new html.CheckboxInputElement()..style.display = "none";
-
-  var _deleted = false;
-  var _isClonned = false;
 
   var _deleteElement = html.SpanElement()
     ..text = "🗑"
@@ -132,29 +133,26 @@ class RowUI extends UI {
     return res;
   }
 
+  bool ready() {
+    return (_deleted && _ready.checked ) || !_children.values.any((c) => !c.ready());
+  }
+
   void _deleteRow(html.Event e) {
+    _deleted = !_deleted;
 
-    if(_isClonned) {
-      _deleted = true;
-      _element.style.display = "none";
-      triggerCheck();
-      return;
-    }
-
-    if (_deleted) {
-      _element.style
-        ..textDecoration = ""
-        ..background ="";
-      _deleted = false;
-    } else {
-      _element.style
-        ..textDecoration = "line-through"
-        ..background =
-            "repeating-linear-gradient(-55deg,#ccc,#ccc 5px,#fff 5px,#fff 10px)";
-      _deleted = true;
-    }
+    deleted(_deleted);
 
     _onBlur(null);
+  }
+
+  void deleted(bool deleted) {
+    _element.style
+      ..textDecoration = deleted ? "line-through" : ""
+      ..background = deleted
+          ? "repeating-linear-gradient(-55deg,#ccc,#ccc 5px,#fff 5px,#fff 10px)"
+          : "";
+    _children.forEach((k, v)=>v.deleted(deleted));
+    super.deleted(deleted);
   }
 
   void _onBlur(html.Event e) {
@@ -178,7 +176,6 @@ class RowUI extends UI {
     _map.forEach((k, v) => map[k] = v);
 
     var rowUI = new RowUI(map, _columns, _parent);
-    rowUI._isClonned = true;
 
     return rowUI;
   }

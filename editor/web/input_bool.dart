@@ -1,25 +1,25 @@
 part of owe;
 
-class NumberInputUI extends UI {
-  num _startValue;
+class BoolInputUI extends UI {
+  bool _startValue;
 
-  var _input = new html.NumberInputElement()..step = "0.00000001";
+  var _input = new html.SelectElement()
+    ..append(
+        new html.OptionElement(data: "FALSE", value: "FALSE", selected: true))
+    ..append(
+        new html.OptionElement(data: "TRUE", value: "TRUE", selected: false));
 
-  var _ready = new html.CheckboxInputElement()
-    ..style.display = "none"
-    ..checked = true;
+  var _ready = new html.CheckboxInputElement()..style.display = "none";
 
-  String get _startValueString => _startValue.toStringAsFixed(8);
+  bool get _value => _input.selectedIndex == 1;
 
-  num get _value => _input.valueAsNumber;
-
-  bool get _modified => _input.value != _startValueString;
+  bool get _modified => _startValue != _value;
 
   html.Element _element;
   html.Element get element => _element;
 
-  NumberInputUI(this._startValue, UI parent) : super(parent) {
-    _input.value = _startValueString;
+  BoolInputUI(this._startValue, UI parent) : super(parent) {
+    _input.selectedIndex = this._startValue ? 1 : 0;
 
     _input.onBlur.listen(_onBlur);
     _input.onChange.listen(_onChange);
@@ -62,10 +62,12 @@ class NumberInputUI extends UI {
     return !_modified || _ready.checked;
   }
 
-  void deleted(bool deleted) {
-    if (_input == null) return;
 
-    _input.style..textDecoration = deleted ? "line-through" : "";
+  void deleted(bool deleted) {
+    if(_input == null) return;
+
+    _input.style
+      ..textDecoration = deleted ? "line-through" : "";
 
     super.deleted(deleted);
 
@@ -73,8 +75,8 @@ class NumberInputUI extends UI {
   }
 
   void clear() {
-    _input.value = "";
-    _startValue = 0;
+    _input.selectedIndex = 0;
+    _startValue = false;
     _refresh();
   }
 }

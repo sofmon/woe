@@ -27,8 +27,17 @@ class MapUI extends UI {
     return res;
   }
 
+  bool ready() {
+    return !_children.values.any((c)=>!c.ready());
+  }
+
   void clear() {
     _children.forEach((k, v) => v.clear());
+  }
+
+  void deleted(bool deleted) {
+    _children.values.forEach((c)=>c.deleted(deleted));
+    super.deleted(deleted);
   }
 
   html.SpanElement _fixedHeader(String text) {

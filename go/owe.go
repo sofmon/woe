@@ -1,25 +1,37 @@
 package owe
 
 import (
+	"encoding/json"
 	"io/ioutil"
 	"net/http"
 	"net/url"
 	"strings"
 )
 
+// Request for update
+type Request struct {
+	json []byte
+}
+
+// Populate object as the update request
+func (r Request) Populate(v interface{}) error {
+	return json.Unmarshal(r.json, v)
+}
+
 // NewHandlerFunc create handle func for the http package with
 // - getFunc is used to retrieve the json to be displayed
-func NewHandlerFunc(getFunc func(url url.URL) ([]byte, error), updateFunc func(url url.URL, json []byte) ([]byte, error), errFunc func(url url.URL, err error)) func(w http.ResponseWriter, r *http.Request) {
+func NewHandlerFunc(getFunc func(url url.URL) (interface{}, error), updateFunc func(url url.URL, req Request) (interface{}, error)) func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		switch r.Method {
 		case http.MethodGet:
-			if strings.HasSuffix(r.URL.Path, "owe.js") {
+			switch {
+			case strings.HasSuffix(r.URL.Path, "owe.js"):
 				serveJS(w, r)
-			} else {
+			case strings.HasSuffix(r.URL.Path, "owe.json"):
+				serveLoad(w, r, getFunc)
+			default:
 				serveHTML(w, r)
 			}
-		case http.MethodPost:
-			serveLoad(w, r, getFunc)
 		case http.MethodPut:
 			serveSave(w, r, updateFunc)
 		}
@@ -36,29 +48,39 @@ func serveJS(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte(oweJS))
 }
 
-func serveLoad(w http.ResponseWriter, r *http.Request, getFunc func(url url.URL) ([]byte, error)) {
-	json, err := getFunc(*r.URL)
+func serveLoad(w http.ResponseWriter, r *http.Request, getFunc func(url url.URL) (interface{}, error)) {
+	obj, err := getFunc(*r.URL)
+	if err != nil {
+		serveError(w, r, err)
+		return
+	}
+	data, err := json.Marshal(obj)
 	if err != nil {
 		serveError(w, r, err)
 		return
 	}
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
-	w.Write(json)
+	w.Write(data)
 }
 
-func serveSave(w http.ResponseWriter, r *http.Request, updateFunc func(url url.URL, json []byte) ([]byte, error)) {
-	json, err := ioutil.ReadAll(r.Body)
+func serveSave(w http.ResponseWriter, r *http.Request, updateFunc func(url url.URL, req Request) (interface{}, error)) {
+	data, err := ioutil.ReadAll(r.Body)
 	if err != nil {
 		serveError(w, r, err)
 		return
 	}
-	json, err = updateFunc(*r.URL, json)
+	obj, err := updateFunc(*r.URL, Request{data})
+	if err != nil {
+		serveError(w, r, err)
+		return
+	}
+	data, err = json.Marshal(obj)
 	if err != nil {
 		serveError(w, r, err)
 		return
 	}
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
-	w.Write(json)
+	w.Write(data)
 }
 
 func serveError(w http.ResponseWriter, r *http.Request, err error) {
