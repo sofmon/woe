@@ -41,9 +41,13 @@ class Editor extends UI {
   void _save() {
     var res = toDynamic();
     var json = convert.json.encode(res);
-    html.HttpRequest.request("./owe.json", method: "PUT", sendData: json)
+    html.HttpRequest.request("./owe.json", method: "POST", sendData: json)
         .then((html.HttpRequest req) {
-          // TODO: process error
+          if(req.status != 200) return; // TODO: process erorrs
+          dynamic data = convert.json.decode(req.responseText);
+          _ui.element.remove();
+          _ui = createUI(data);
+          _parentElement.append(_ui.element);
         });
   }
 }

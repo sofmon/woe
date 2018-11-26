@@ -8,70 +8,6 @@ abstract class UI {
 
   html.Element get element;
 
-  UI createUI(dynamic data) {
-    if (data is Map) {
-      return MapUI(data, this);
-    }
-    if (data is List) {
-      return ListUI(data, this);
-    }
-    if (data is String) {
-      return StringInputUI(data, this);
-      // TODO: support dates
-    }
-    if (data is num) {
-      return NumberInputUI(data, this);
-    }
-    if (data is bool) {
-      return BoolInputUI(data, this);
-    }
-    return EmptyUI(this);
-  }
-
-  html.Element header(String name) {
-    int i = 0;
-    UI ui = _parent;
-    while (ui != null) {
-      ui = ui._parent;
-      i++;
-    }
-    html.HeadingElement el;
-    switch (i) {
-      case 1:
-        el = html.HeadingElement.h1();
-        break;
-      case 2:
-        el = html.HeadingElement.h2();
-        break;
-      case 3:
-        el = html.HeadingElement.h3();
-        break;
-      case 4:
-        el = html.HeadingElement.h4();
-        break;
-      case 5:
-        el = html.HeadingElement.h5();
-        break;
-      default:
-        el = html.HeadingElement.h6();
-        break;
-    }
-    el.text = name;
-    return el;
-  }
-
-  html.Element tableRow(List<html.Element> elements) {
-    html.Element tr = html.Element.tr();
-    elements.forEach((e) => tr.append(html.Element.td()..append(e)));
-    return tr;
-  }
-
-  html.Element tableHeader(List<String> elements) {
-    html.Element tr = html.Element.tr();
-    elements.forEach((e) => tr.append(html.Element.th()..text = niceText(e)));
-    return tr;
-  }
-
   void triggerCheck() {
     if (_parent == null) {
       return;
@@ -86,6 +22,10 @@ abstract class UI {
   void deleted(bool del) {
     _deleted = del;
   }
+
+  dynamic toDynamic();
+
+  /* helpers */
 
   String niceText(String text) {
     var sb = new StringBuffer();
@@ -110,7 +50,38 @@ abstract class UI {
     return sb.toString().toLowerCase();
   }
 
-  dynamic toDynamic();
+  html.Element tableRow(List<html.Element> elements) {
+    html.Element tr = html.Element.tr();
+    elements.forEach((e) => tr.append(html.Element.td()..append(e)));
+    return tr;
+  }
+
+  html.Element tableHeader(List<String> elements) {
+    html.Element tr = html.Element.tr();
+    elements.forEach((e) => tr.append(html.Element.th()..text = niceText(e)));
+    return tr;
+  }
+  
+  UI createUI(dynamic data) {
+    if (data is Map) {
+      return MapUI(data, this);
+    }
+    if (data is List) {
+      return ListUI(data, this);
+    }
+    if (data is String) {
+      return StringInputUI(data, this);
+      // TODO: support dates
+    }
+    if (data is num) {
+      return NumberInputUI(data, this);
+    }
+    if (data is bool) {
+      return BoolInputUI(data, this);
+    }
+    return EmptyUI(this);
+  }
+
 }
 
 class EmptyUI extends UI {
@@ -128,4 +99,6 @@ class EmptyUI extends UI {
   }
 
   void clear() {}
+
+  void update(dynamic data) {}
 }

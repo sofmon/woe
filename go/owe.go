@@ -32,7 +32,7 @@ func NewHandlerFunc(getFunc func(url url.URL) (interface{}, error), updateFunc f
 			default:
 				serveHTML(w, r)
 			}
-		case http.MethodPut:
+		case http.MethodPost:
 			serveSave(w, r, updateFunc)
 		}
 	}

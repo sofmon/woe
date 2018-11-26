@@ -134,7 +134,7 @@ class RowUI extends UI {
   }
 
   bool ready() {
-    return (_deleted && _ready.checked ) || !_children.values.any((c) => !c.ready());
+    return (_deleted && _ready.checked ) || (!_deleted && !_children.values.any((c) => !c.ready()));
   }
 
   void _deleteRow(html.Event e) {
