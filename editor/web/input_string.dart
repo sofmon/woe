@@ -39,6 +39,8 @@ class StringInputUI extends UI {
       _switchToInput();
       _inputElement.value = _startValue;
     }
+
+    _refresh();
   }
 
   void _switchToTextarea() {

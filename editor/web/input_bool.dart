@@ -30,6 +30,8 @@ class BoolInputUI extends UI {
       ..style.whiteSpace = "nowrap"
       ..append(_input)
       ..append(_ready);
+
+    _refresh();
   }
 
   void _onBlur(html.Event e) {
