@@ -1,4 +1,4 @@
-library owe;
+library woe;
 
 import 'dart:html' as html;
 import 'dart:convert' as convert;

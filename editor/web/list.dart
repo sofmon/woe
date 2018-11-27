@@ -1,4 +1,4 @@
-part of owe;
+part of woe;
 
 class ListUI extends UI {
   List _list;

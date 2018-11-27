@@ -1,4 +1,4 @@
-name: owe
+name: woe
 version: 0.0.1
 dev_dependencies:
   build_runner: ">=0.8.10 <2.0.0"

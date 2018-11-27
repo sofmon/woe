@@ -1,4 +1,4 @@
-part of owe;
+part of woe;
 
 class NumberInputUI extends UI {
   num _startValue;

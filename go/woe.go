@@ -1,4 +1,4 @@
-package owe
+package woe
 
 import (
 	"encoding/json"
@@ -25,9 +25,9 @@ func NewHandlerFunc(getFunc func(url url.URL) (interface{}, error), updateFunc f
 		switch r.Method {
 		case http.MethodGet:
 			switch {
-			case strings.HasSuffix(r.URL.Path, "owe.js"):
+			case strings.HasSuffix(r.URL.Path, "woe.js"):
 				serveJS(w, r)
-			case strings.HasSuffix(r.URL.Path, "owe.json"):
+			case strings.HasSuffix(r.URL.Path, "woe.json"):
 				serveLoad(w, r, getFunc)
 			default:
 				serveHTML(w, r)
@@ -40,12 +40,12 @@ func NewHandlerFunc(getFunc func(url url.URL) (interface{}, error), updateFunc f
 
 func serveHTML(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
-	w.Write([]byte(oweHTML))
+	w.Write([]byte(woeHTML))
 }
 
 func serveJS(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "text/javascript; charset=utf-8")
-	w.Write([]byte(oweJS))
+	w.Write([]byte(woeJS))
 }
 
 func serveLoad(w http.ResponseWriter, r *http.Request, getFunc func(url url.URL) (interface{}, error)) {

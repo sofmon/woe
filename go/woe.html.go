@@ -1,13 +1,13 @@
-package owe
+package woe
 
-const oweHTML = `<!DOCTYPE html>
+const woeHTML = `<!DOCTYPE html>
 <html>
 
 <head>
   <title>Web Object Editor</title>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <script defer src="./owe.js"></script>
+  <script defer src="./woe.js"></script>
   <style>
   html, body, input, textarea, select {
     font-family: "Courier New", Courier, monospace;

@@ -1,4 +1,4 @@
-part of owe;
+part of woe;
 
 const TEXTAREA_LENGHT_THRESHOLD = 100;
 const SOME_RANDOM_TEXT = '55f07dd6-87d3-48ba-9fe1-2f45a1ffbea1';

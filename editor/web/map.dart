@@ -1,4 +1,4 @@
-part of owe;
+part of woe;
 
 class MapUI extends UI {
   Map _map;

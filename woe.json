@@ -1,0 +1,24 @@
+{
+    "firstName": "...",
+    "lastName": "...",
+    "age": 40,
+    "check": false,
+    "address": {
+        "street": "...",
+        "number": "...",
+        "address": {
+            "street": "...",
+            "number": "..."
+        }
+    },
+    "tickets": [
+        {
+            "Hello": "Hi",
+            "someElse": "...",
+            "address": {
+                "street": "...",
+                "number": "..."
+            }
+        }
+    ]
+}
